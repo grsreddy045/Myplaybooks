@@ -1,0 +1,68 @@
+- name: Ensure 7zip is installed
+  win_chocolatey:
+    name: 7zip.portable
+    state: present
+
+- name: "Open port {{ service_port }} in firewall"
+  win_firewall_rule:
+    name: "Port {{ service_port }}"
+    enable: true
+    state: present
+    localport: "{{ service_port }}"
+    action: allow
+    direction: in
+    protocol: TCP
+    force: true
+
+- name: Install IIS and features
+  win_feature:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - Web-Server
+    - Web-Mgmt-Console
+
+- name: Install C++ 2015 Redistributable
+  win_package:
+    name: Microsoft Visual C++ 2015 x64 Additional Runtime - 14.0.24215
+    state: present
+    arguments: "/quiet"
+    product_id: '{EF1EC6A9-17DE-3DA9-B040-686A1E8A8B04}'
+    path: http://bams-amers-sami-api.int.thomsonreuters.com/artifactory/default.generic.global/trta-corp-techops/configs/vc_redist.x64.exe
+
+- name: Install .NET Core
+  win_package:
+    name: Microsoft .NET Core 1.1.1 - Runtime (x64)
+    state: present
+    arguments: "/quiet"
+    product_id: '{5C55840C-94E5-40CB-B709-15A0F57D7637}'
+    path: http://bams-amers-sami-api.int.thomsonreuters.com/artifactory/default.generic.global/trta-corp-techops/configs/DotNetCore.1.0.4_1.1.1-WindowsHosting.exe
+
+- name: Delete the default web app pool
+  win_iis_webapppool:
+    name: DefaultAppPool
+    state: absent
+
+- name: Delete the default website
+  win_iis_website:
+    name: "Default Web Site"
+    state: absent
+
+- name: Ensure the deployment directory exists
+  win_file:
+    state: directory
+    path: "{{ windows_install_dir }}"
+
+- name: Create a new application pool called "{{ service_name }}" in Started state
+  win_iis_webapppool:
+    name: "{{ service_name }}"
+    state: started
+
+- name: "create {{ service_name }} .NET CORE website"
+  win_iis_website:
+    name: "{{ service_name }}"
+    state: started
+    port: 8080
+    application_pool: "{{ service_name }}"
+    physical_path: "{{ windows_install_dir }}"
+    parameters: "logfile.directory:c:\\{{ service_name }}\\logs"

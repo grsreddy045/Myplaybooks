@@ -1,0 +1,53 @@
+# lo# context defaults to the name of the app by default - use the property below to override
+#server.contextPath: 
+
+spring.profiles.active: postgres
+management.security.enabled: false
+
+# s3 bucket for jwt public token
+com.trgr.token.validation.jwks-bucket-name: dms-akkadia-siris
+# s3 folder for jwt public token
+akkadia.bucket.keysfoldername: akkadia-keys
+# s3 bucket for binaries
+persistence.id: resources-akkadia-main-dev-use1-tr-tax-nonprod
+# s3 folder for binaries
+akkadia.bucket.binariesfoldername: akkadia-siris-binaries
+
+#Rabbit-mq properties
+spring:
+    cloud.config.enabled: false
+    zipkin.enabled: false
+    datasource:
+        url: jdbc:postgresql://akkadia-main-dev.c69sniltamfr.us-east-1.rds.amazonaws.com:5432/akkadia_dev
+        username: akkadia 
+        password: aidakka-dev
+#optional
+        showSQL: true
+#        connectionTimeoutMs: 30000
+#        idleTimeoutMs: 600000
+#        maxLifetimeMs: 0
+#        minIdle: 2
+#        maxPoolSize: 5
+#        leakDetectionThresholdMs: 0
+#        registerMbeans: true
+#        socketTimeoutS: 0	
+#        driver-class-name: org.postgresql.Driver
+    rabbitmq:
+        host: 10.114.15.96
+        addresses: 10.114.15.96:5672
+        portnumber: 5672
+        username: dms 
+        password: 123carr0t
+
+# NOTE: currently - we're required to have a single custom field.  this is a known limitation in marduk
+akkadiaCCF:
+    prop:
+        type.folder.DO_NOT_USE_TEST.customFields: folder_Color
+    field: 
+        folder.Color.id: folder_Color
+        folder.Color.name: Color
+        folder.Color.fieldType: String
+        folder.Color.required: true
+        folder.Color.filterable: true
+        folder.Color.sortable: true
+

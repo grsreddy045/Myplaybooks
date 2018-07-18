@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>/var/log/dms/{{ service_name }}.json</file>
+		<append>true</append>
+		<!-- set immediateFlush to false for much higher logging throughput -->
+		<!-- <immediateFlush>true</immediateFlush> -->
+		<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<timestamp>
+					<timeZone>UTC</timeZone>
+				</timestamp>
+
+				<!-- Basic components -->
+				<loggerName />
+				<threadName />
+				<logLevel />
+				<stackTrace />
+				<message />
+
+				<!-- Contextual components -->
+				<context>
+					<fieldName>context</fieldName>
+				</context>
+				<mdc />
+
+				<!-- Logstash components -->
+				<tags />
+				<logstashMarkers />
+				<arguments>
+					<fieldName>arguments</fieldName>
+				</arguments>
+			</providers>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>

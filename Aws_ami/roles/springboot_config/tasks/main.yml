@@ -1,0 +1,5 @@
+- include: linux_config.yml
+  when: ansible_os_family == "RedHat"
+
+# - include: windows_config.yml
+#   when: ansible_os_family == "Windows"

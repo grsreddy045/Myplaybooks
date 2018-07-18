@@ -1,0 +1,28 @@
+- name: Provision server to become an AMI
+  hosts: localhost
+
+  roles:
+    - provision_server
+
+- name: Configure server
+  hosts: deployment_instance
+  remote_user: ec2-user
+  become: true
+
+  pre_tasks:
+    - name: Load environment specific variables
+      include_vars: "vars/{{ env }}.yml"
+
+  roles:
+    - fouadsemaan.java-oracle-jre
+    - springboot_config
+    - springboot_deploy
+
+- name: Create AMI of Deployment server
+  hosts: localhost
+
+  vars:
+    build_number: "{{ deployed_version }}"
+
+  roles:
+    - create_ami

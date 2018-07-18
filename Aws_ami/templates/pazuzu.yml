@@ -1,0 +1,17 @@
+loglocation: /var/log/dms
+logfile: pazuzu.json
+logging:
+  config: logback.xml
+
+# allows for open access to actuator endpoints
+management:
+  security:
+    enabled: false
+
+# Disable the spring config client / enabled by default
+spring:
+  cloud:
+    config:
+      enabled: false
+  zipkin:
+    enabled: false

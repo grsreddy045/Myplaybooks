@@ -1,0 +1,6 @@
+service_port: 8080
+
+linux_install_dir:  "/var/lib/project/{{ project }}"
+linux_log_dir: "/var/log/{{ project }}"
+
+windows_install_dir: "C:\\projects\\{{ service_name }}\\publish"

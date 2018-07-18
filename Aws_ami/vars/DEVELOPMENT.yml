@@ -1,0 +1,15 @@
+# ansible vars
+# ansible_python_interpreter: /usr/bin/python3
+
+# java vars
+jre_oracle_version: 8u131
+
+# postgresql vars
+# postgresql_client_version: 9.6
+
+# techops calendar vars
+# db_username: calendar
+# db_password: calendardev
+# db_host: techops-calendar-db.c69sniltamfr.us-east-1.rds.amazonaws.com
+# db_port: 5432
+# db_name: calendar

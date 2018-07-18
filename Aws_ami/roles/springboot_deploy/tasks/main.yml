@@ -1,0 +1,89 @@
+- name: Fail when required variables are unknown
+  fail:
+    msg: The variable "{{ item }}" has not been defined.
+  with_items:
+    - "{{ packageURL }}"
+    - "{{ env }}"
+  when: not item
+
+- name: Check if Service Exists
+  stat:
+    path: "/etc/init.d/{{ service_name }}"
+  register: service_status
+
+- debug:
+    var: service_status.stat.exists
+    verbosity: 2
+    
+- name: Stop Service
+  service: 
+    name: "{{ service_name }}"
+    state: stopped
+  when: service_status.stat.exists
+  register: service_stopped
+
+- name: Create a temporary directory
+  tempfile:
+    state: directory
+  register: tempdir
+  
+# - name: Ensure the deployment directory exists
+#   created in config role
+
+# - name: Ensure the logging directory exists
+#   created in config role
+
+- name: Download binary
+  get_url:
+    url: "{{ packageURL }}"
+    dest: "{{ linux_install_dir }}/{{ service_name }}.jar"
+    force: yes
+    owner: "{{ project }}"
+    group: "{{ project }}"
+    mode: 0500
+
+- name: Template out the configuration yaml file
+  template:
+    src: "{{ playbook_dir }}/templates/{{ service_name }}.yml"
+    dest: "{{ linux_install_dir }}/application.yml"
+    owner: "{{ project }}"
+    group: "{{ project }}"
+    
+- name: Template out the logback xml file
+  template:
+    src: "{{ playbook_dir }}/templates/logback.xml"
+    dest: "{{ linux_install_dir }}/logback.xml"
+    owner: "{{ project }}"
+    group: "{{ project }}"
+    
+- name: Template out the spring boot config file
+  template:
+    src: "{{ playbook_dir }}/templates/springboot.conf"
+    dest: "{{ linux_install_dir }}/{{ service_name }}.conf"
+    owner: "{{ project }}"
+    group: "{{ project }}"
+    mode: 0540
+    
+- name: Create init.d link
+  file:
+    src: "{{ linux_install_dir }}/{{ service_name }}.jar"
+    dest: "/etc/init.d/{{ service_name }}"
+    state: link
+
+# - name: Enable and start service
+#   service:
+#     path: "/etc/init.d/{{ service_name }}"
+#     name: "{{ application_name }}"
+#     enabled: yes
+#     state: started
+
+- name: "Start {{ service_name }} service"
+  service:
+    name: "{{ service_name }}"
+    state: started
+    enabled: true
+
+- name: Delete the temporary directory
+  file:
+    state: absent
+    path: "{{ tempdir.path }}"

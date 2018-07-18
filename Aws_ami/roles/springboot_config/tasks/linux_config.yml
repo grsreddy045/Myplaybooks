@@ -1,0 +1,31 @@
+- name: Install dependencies for Spring Boot
+  yum:
+    state: installed
+    name: "{{ item }}"
+  with_items:
+    - unzip
+
+# - name: Install jdk
+#   include_role: fouadsemaan.java-oracle-jre
+#   vars:
+#     jre_oracle_version: "{{ jre_oracle_version }}"
+
+- name: Create users
+  user:
+    name: "{{ project }}"
+    comment: "Created by Ansible"
+    state: present
+    createhome: true
+    shell: /bin/bash
+
+- name: Create required directories
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ project }}"
+    group: "{{ project }}"
+    mode: 0755
+  with_items:
+    - "{{ linux_install_dir }}"
+    - "{{ linux_log_dir }}"
+

@@ -1,0 +1,13 @@
+### REQUIRED VARS ###
+# {{ project_name }}
+# {{ service_name }}
+# {{ major_version }}
+# {{ minor_version }}
+# {{ build_num }}
+# cf_env
+
+- name: Provision server to become an AMI
+  hosts: localhost
+
+  roles:
+    - deploy_ami

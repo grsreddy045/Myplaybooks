@@ -1,0 +1,11 @@
+project_name: dms
+project: "{{ project_name }}"
+install_dir: "/var/lib/project/{{ project_name }}"
+log_dir: "/var/log/{{ project_name }}"
+
+#ami
+platform: linux
+tag_name: "{{ project_name }}-{{ service_name }}-deploy"
+tag_financial_identifier: 450200186
+tag_application_asset_insight_id: 204832
+tag_environment_type: LAB
